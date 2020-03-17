@@ -114,41 +114,23 @@ services:
             # secret
             MINIO_SECRET_KEY:
         volumes:
-            # mounts a docker volume named `mender-artifacts` as /export directory
-            - mender-artifacts:/export:rw
+            # mounts external directory to /export for `mender-artifacts`
+            - /mnt/md0/mender/mender-artifacts:/export:rw
 
     mender-mongo:
         volumes:
-            - mender-db:/data/db:rw
+            # mounts external directory to /data/db for `mender-db`
+            - /mnt/md0/mender/mender-db:/data/db:rw
     mender-elasticsearch:
         volumes:
-            - mender-elasticsearch-db:/usr/share/elasticsearch/data:rw
+            # mounts external directory to /usr/share/elasticsearch/data for `mender-elasticsearch-db`
+            - /mnt/md0/mender/mender-elasticsearch-db:/usr/share/elasticsearch/data:rw
             - ./conductor/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     mender-redis:
         volumes:
-            - mender-redis-db:/var/lib/redis:rw
+            # mounts external directory to /var/lib/redis for `mender-redis-db`
+            - /mnt/md0/mender/mender-redis-db:/var/lib/redis:rw
             - ./conductor/redis/redis.conf:/etc/redis/redis.conf
             - ./conductor/redis/entrypoint.sh:/redis/entrypoint.sh
         entrypoint: /redis/entrypoint.sh
 
-volumes:
-    # mender artifacts storage
-    mender-artifacts:
-      external:
-          # use external volume created manually
-          name: mender-artifacts
-    # mongo service database
-    mender-db:
-      external:
-          # use external volume created manually
-          name: mender-db
-    # elasticsearch database
-    mender-elasticsearch-db:
-      external:
-          # use external volume created manually
-          name: mender-elasticsearch-db
-    # redis database
-    mender-redis-db:
-      external:
-          # use external volume created manually
-          name: mender-redis-db

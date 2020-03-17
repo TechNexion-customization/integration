@@ -36,6 +36,8 @@ services:
             options:
                 max-file: "10"
                 max-size: "50m"
+        environment:
+            DEVICEAUTH_MAX_DEVICES_LIMIT_DEFAULT: 500
 
     mender-inventory:
         command: server --automigrate
@@ -58,7 +60,7 @@ services:
                 max-file: "10"
                 max-size: "50m"
         environment:
-            ALLOWED_HOSTS: my-gateway-dns-name
+            ALLOWED_HOSTS: mender.technexion.net mender2.technexion.net
 
     storage-proxy:
         ports:
@@ -71,7 +73,7 @@ services:
                     # available on, for instance if devices will access storage
                     # using https://s3.acme.org:9000, then set this to
                     # s3.acme.org
-                    - set-my-alias-here.com
+                    - mender.technexion.net
         environment:
 
             # use nginx syntax for rate limiting, see
@@ -79,8 +81,8 @@ services:
             # Examples:
             #   1m - 1MB/s
             #   512k - 512kB/s
-            DOWNLOAD_SPEED: 1m
-            MAX_CONNECTIONS: 100
+            DOWNLOAD_SPEED: 5m
+            MAX_CONNECTIONS: 10
         volumes:
             - ./production/keys-generated/certs/storage-proxy/cert.crt:/var/www/storage-proxy/cert/cert.crt:ro
             - ./production/keys-generated/certs/storage-proxy/private.key:/var/www/storage-proxy/cert/private.key:ro
@@ -93,15 +95,15 @@ services:
         environment:
             STORAGE_BACKEND_CERT: /etc/ssl/certs/storage-proxy.crt
             # access key, the same value as MINIO_ACCESS_KEY
-            DEPLOYMENTS_AWS_AUTH_KEY:
+            DEPLOYMENTS_AWS_AUTH_KEY: mender-deployments
             # secret, the same valie as MINIO_SECRET_KEY
-            DEPLOYMENTS_AWS_AUTH_SECRET:
+            DEPLOYMENTS_AWS_AUTH_SECRET: quoh9Poh8ai8Oosu
 
             # deployments service uses signed URLs, hence it needs to access
             # storage-proxy using exactly the same name as devices will; if
             # devices will access storage using https://s3.acme.org:9000, then
             # set this to https://s3.acme.org:9000
-            DEPLOYMENTS_AWS_URI: https://set-my-alias-here.com
+            DEPLOYMENTS_AWS_URI: https://mender.technexion.net:9000
         logging:
             options:
                 max-file: "10"
@@ -110,9 +112,9 @@ services:
     minio:
         environment:
             # access key
-            MINIO_ACCESS_KEY:
+            MINIO_ACCESS_KEY: mender-deployments
             # secret
-            MINIO_SECRET_KEY:
+            MINIO_SECRET_KEY: quoh9Poh8ai8Oosu
         volumes:
             # mounts external directory to /export for `mender-artifacts`
             - /mnt/md0/mender/mender-artifacts:/export:rw

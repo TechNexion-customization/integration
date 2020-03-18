@@ -91,9 +91,9 @@ services:
     mender-deployments:
         command: server --automigrate
         volumes:
-            - ./production/keys-generated/certs/storage-proxy/cert.crt:/etc/ssl/certs/storage-proxy.crt:ro
+            - ./production/keys-generated/certs/storage-proxy/cert.crt:/etc/ssl/certs/storage-proxy.pem:ro
         environment:
-            STORAGE_BACKEND_CERT: /etc/ssl/certs/storage-proxy.crt
+            STORAGE_BACKEND_CERT: /etc/ssl/certs/storage-proxy.pem
             # access key, the same value as MINIO_ACCESS_KEY
             DEPLOYMENTS_AWS_AUTH_KEY: mender-deployments
             # secret, the same valie as MINIO_SECRET_KEY

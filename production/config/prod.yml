@@ -60,7 +60,7 @@ services:
                 max-file: "10"
                 max-size: "50m"
         environment:
-            ALLOWED_HOSTS: mender.technexion.net mender2.technexion.net
+            ALLOWED_HOSTS: ota.technexion.net
 
     storage-proxy:
         ports:
@@ -73,7 +73,7 @@ services:
                     # available on, for instance if devices will access storage
                     # using https://s3.acme.org:9000, then set this to
                     # s3.acme.org
-                    - mender.technexion.net
+                    - ota.technexion.net
         environment:
 
             # use nginx syntax for rate limiting, see
@@ -103,7 +103,7 @@ services:
             # storage-proxy using exactly the same name as devices will; if
             # devices will access storage using https://s3.acme.org:9000, then
             # set this to https://s3.acme.org:9000
-            DEPLOYMENTS_AWS_URI: https://mender.technexion.net:9000
+            DEPLOYMENTS_AWS_URI: https://ota.technexion.net:9000
         logging:
             options:
                 max-file: "10"
